@@ -13,14 +13,21 @@
     "android:dev": "react-native run-android --variant=developmentdebug",
     "android:dev-release": "react-native run-android --variant=developmentrelease",
     "android:prod": "react-native run-android --variant=productiondebug",
-    "android:prod-release": "react-native run-android --variant=productionrelease"
+    "android:prod-release": "react-native run-android --variant=productionrelease",
+    "unlink": "react-native unlink react-native-safe-area-context"
   },
   "dependencies": {
+    "@react-navigation/native": "^6.1.7",
+    "@react-navigation/native-stack": "^6.9.13",
     "@reduxjs/toolkit": "^1.9.5",
     "react": "18.2.0",
     "react-native": "0.72.2",
     "react-native-config": "^1.5.1",
+    "react-native-gesture-handler": "^2.12.0",
+    "react-native-reanimated": "^3.4.0",
     "react-native-rename": "^3.2.13",
+    "react-native-safe-area-context": "^4.7.1",
+    "react-native-screens": "^3.22.1",
     "react-redux": "^8.1.1",
     "redux-saga": "^1.2.3"
   },
