@@ -17,6 +17,7 @@
     "unlink": "react-native unlink react-native-safe-area-context"
   },
   "dependencies": {
+    "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@reduxjs/toolkit": "^1.9.5",
