@@ -9,7 +9,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // local dependencies
 import store from './store';
-import { PRIVATE, PUBLIC } from "./constans/routes";
+import { navigationRef } from './root-navigation';
+import { PRIVATE, PUBLIC } from "./constants/routes";
 import { useController as singnInConroller } from './pablic-screens/sign-in/controller';
 // screens
 import SignIn from "./pablic-screens/sign-in";
@@ -19,19 +20,18 @@ enableScreens();
 const Stack = createNativeStackNavigator();
 
 const Initializer = () => {
-    const { auth } = singnInConroller();
+    const [{ auth }] = singnInConroller();
     return <Stack.Navigator initialRouteName={auth ? PRIVATE : PUBLIC}>
         <Stack.Screen name={PUBLIC} component={SignIn} options={{ headerShown: false }} />
         <Stack.Screen name={PRIVATE} component={PrivateScreens} options={{ headerShown: false }} />
     </Stack.Navigator>
 }
 
-const App = () => {
-    return <Provider store={store}>
-        <NavigationContainer>
+const App = () =>
+    <Provider store={store}>
+        <NavigationContainer ref={navigationRef}>
             <Initializer />
         </NavigationContainer>
-    </Provider>
-};
+    </Provider>;
 
 export default App;
