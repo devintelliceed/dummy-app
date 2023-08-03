@@ -7,6 +7,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import { PRIVATE } from "../../constants/routes";
 import { useControllerCreator } from "../../hooks";
 import { rootNavigation } from "../../root-navigation";
+import { updateData as updateRootData } from '../../store/app';
 
 // Configure field
 export const AUTH_INPUTS = {
@@ -15,7 +16,6 @@ export const AUTH_INPUTS = {
 };
 
 const initialState = {
-    auth: false,
     disabled: false,
     initialized: false,
     initialValues: {
@@ -49,10 +49,11 @@ export function * signInSaga () {
 function * submitSaga ({ payload }) {
     yield put(updateData({ disabled: true, initialized: false }));
     try {
-        yield put(updateData({ auth: true, initialValues: { ...payload, password: '' } }));
+        yield put(updateRootData({ auth: true }));
+        yield put(updateData({ initialValues: { ...payload, password: '' } }));
         yield rootNavigation(PRIVATE);
     } catch ({ message }) {
-        console.log('Error');
+        console.log('SignIn Error');
         yield put(updateData({ initialValues: { ...payload, password: '' } }));
     }
     yield put(updateData({ disabled: false, initialized: true }));

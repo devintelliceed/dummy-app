@@ -1,8 +1,9 @@
 // outsource dependencies
 import * as yup from 'yup';
 import { Formik } from 'formik';
+import { Button } from '@rneui/themed';
 import { memo, useCallback } from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 // local dependencies
 import { COLOR } from '../../constants/root.theme';
@@ -48,17 +49,26 @@ const SignIn = () => {
                         disabled={!disabled}
                         value={values.password}
                         name={AUTH_INPUTS.PASSWORD}
-                        inputContainerStyle={{ marginTop: 20 }}
                         onChangeText={handleChange(AUTH_INPUTS.PASSWORD)}
                     />
                     <Button
                         fullWidth
                         title="LOGIN"
-                        type="submit"
-                        variant="outlined"
+                        type="outline"
+                        loading={disabled}
                         onPress={handleSubmit}
-                        style={{ marginTop: 30 }}
-                        color={COLOR.GREEN.hex()}
+                        loadingProps={{ size: 'small', color: 'white' }}
+                        buttonStyle={{
+                            borderRadius: 5,
+                            backgroundColor: COLOR.GREEN.hex(),
+                        }}
+                        containerStyle={{
+                            height: 50,
+                            width: 200,
+                            marginVertical: 10,
+                            marginHorizontal: 50,
+                        }}
+                        titleStyle={{ fontWeight: 300, fontSize: 14, color: COLOR.WHITE.hex() }}
                     />
                 </View>}
         </Formik>
@@ -77,6 +87,7 @@ const styles = StyleSheet.create({
         backgroundColor: COLOR.WHITE.hex()
     },
     formContainer: {
-        margin: 16
-    },
+        margin: 16,
+        width: '80%'
+    }
 });

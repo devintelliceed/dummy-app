@@ -1,11 +1,18 @@
 // outsource dependencies
 import { memo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Text } from '@rneui/themed';
+import { View, StyleSheet } from "react-native";
 
-const MainScreen = () =>
-    <View style={styles.container}>
-        <Text style={{ margin: 10 }}> This is main page </Text>
-    </View>;
+// local dependencies
+import Screen from '../../components/screen';
+
+const MainScreen = () => {
+    return <Screen>
+        <View style={styles.container}>
+            <Text h3 h3Style={{ color: '#777777' }}> This is MainScreen </Text>
+        </View>
+    </Screen>;
+}
 
 export default memo(MainScreen);
 
