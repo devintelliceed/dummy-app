@@ -6,6 +6,7 @@ import { memo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 // local dependencies
+import Screen from '../../components/screen';
 import { COLOR } from '../../constants/root.theme';
 import TextInput from '../../components/text-input';
 import { useController, AUTH_INPUTS } from './controller';
@@ -18,7 +19,7 @@ const validationSchema = () => yup.object().shape({
 const SignIn = () => {
     const [{ initialValues, disabled }, { submit }] = useController();
     const submitHandler = useCallback(formData => submit(formData), [submit]);
-    return <View style={styles.container}>
+    return <Screen style={styles.container}>
         <Formik
             onSubmit={submitHandler}
             initialValues={initialValues}
@@ -72,7 +73,7 @@ const SignIn = () => {
                     />
                 </View>}
         </Formik>
-    </View>
+    </Screen>
 };
 
 export default memo(SignIn);
@@ -80,8 +81,6 @@ export default memo(SignIn);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingLeft: -20,
-        paddingRight: -20,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: COLOR.WHITE.hex()

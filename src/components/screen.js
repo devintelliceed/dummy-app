@@ -44,8 +44,6 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         display: 'flex',
-        paddingLeft: 20,
-        paddingRight: 20,
         backgroundColor: COLOR.BLUE.lighten(0.5).hex(),
     },
 });

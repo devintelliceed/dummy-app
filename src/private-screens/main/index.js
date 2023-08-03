@@ -5,11 +5,12 @@ import { View, StyleSheet } from "react-native";
 
 // local dependencies
 import Screen from '../../components/screen';
+import { COLOR } from "../../constants/root.theme";
 
 const MainScreen = () => {
     return <Screen>
         <View style={styles.container}>
-            <Text h3 h3Style={{ color: '#777777' }}> This is MainScreen </Text>
+            <Text h3 h3Style={{ color: COLOR.GREY }}> This is MainScreen </Text>
         </View>
     </Screen>;
 }
