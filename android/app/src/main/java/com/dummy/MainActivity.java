@@ -1,12 +1,18 @@
 package com.dummy;
-
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 import com.facebook.react.ReactActivity;
+import android.os.Bundle;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
-public class MainActivity extends ReactActivity {
 
+public class MainActivity extends ReactActivity {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(null);
+  }
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
@@ -21,12 +27,21 @@ public class MainActivity extends ReactActivity {
    * DefaultReactActivityDelegate} which allows you to easily enable Fabric and Concurrent React
    * (aka React 18) with two boolean flags.
    */
+//  @Override
+//  protected ReactActivityDelegate createReactActivityDelegate() {
+//    return new DefaultReactActivityDelegate(
+//        this,
+//        getMainComponentName(),
+//        // If you opted-in for the New Architecture, we enable the Fabric Renderer.
+//        DefaultNewArchitectureEntryPoint.getFabricEnabled());
+//  }
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
-    return new DefaultReactActivityDelegate(
-        this,
-        getMainComponentName(),
-        // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-        DefaultNewArchitectureEntryPoint.getFabricEnabled());
+    return new ReactActivityDelegate(this, getMainComponentName()) {
+    @Override
+  protected ReactRootView createRootView() {
+    return new RNGestureHandlerEnabledRootView(MainActivity.this);            }
+
+  };
   }
 }
