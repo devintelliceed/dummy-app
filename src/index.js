@@ -15,7 +15,7 @@ import { navigationRef } from './root-navigation';
 import { PRIVATE, PUBLIC } from "./constants/routes";
 import { useController as useRootController } from './store/app';
 // screens
-import SignIn from "./pablic-screens/sign-in";
+import PublicScreens from './pablic-screens';
 import PrivateScreens from "./private-screens";
 
 enableScreens();
@@ -24,7 +24,7 @@ const Stack = createNativeStackNavigator();
 const Initializer = () => {
     const [{ auth }, { updateData }] = useRootController();
     const appState = useRef(AppState.currentState);
-  
+
     useEffect(() => {
       const subscription = AppState.addEventListener('change', nextAppState => {
         if (
@@ -40,7 +40,7 @@ const Initializer = () => {
       return () => subscription.remove();
     }, []);
     return <Stack.Navigator initialRouteName={auth ? PRIVATE : PUBLIC}>
-        <Stack.Screen name={PUBLIC} component={SignIn} options={{ headerShown: false }} />
+        <Stack.Screen name={PUBLIC} component={PublicScreens} options={{ headerShown: false }} />
         <Stack.Screen name={PRIVATE} component={PrivateScreens} options={{ headerShown: false }} />
     </Stack.Navigator>
 }

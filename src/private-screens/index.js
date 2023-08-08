@@ -6,8 +6,9 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '
 // local dependencies
 import MainScreen from './main';
 import Profile from './profile';
+import { useController } from '../store/app';
 import { COLOR } from '../constants/root.theme';
-import { MAIN, PROFILE, PUBLIC } from '../constants/routes';
+import { MAIN, PROFILE } from '../constants/routes';
 
 const Drawer = createDrawerNavigator();
 
@@ -18,8 +19,9 @@ const Item = memo(({ focused, title }) =>
         </Text>
     </View>);
 
-const PrivateScreens = ({ navigation }) =>
-    <Drawer.Navigator
+const PrivateScreens = () => {
+    const [{}, { logout }] = useController();
+    return <Drawer.Navigator
         screenOptions={{
             headerTintColor: COLOR.GREEN.hex(),
             headerStyle: { backgroundColor: COLOR.TRANSPARENT },
@@ -31,13 +33,13 @@ const PrivateScreens = ({ navigation }) =>
                 <DrawerContentScrollView {...props}>
                     <DrawerItemList {...props} />
                 </DrawerContentScrollView>
-                <Button pill onPress={() => navigation.navigate(PUBLIC)} style={styles.logout} variant="danger" title="LOGOUT" />
+                <Button pill onPress={() => logout()} style={styles.logout} variant="danger" title="LOGOUT" />
             </SafeAreaView>}
     >
         <Drawer.Screen name={MAIN} options={{ headerTitle: 'Home title', title: ({ focused }) => <Item focused={focused} title="Home" /> }} component={MainScreen} />
         <Drawer.Screen name={PROFILE} options={{ headerTitle: 'Profile', title: ({ focused }) => <Item focused={focused} title="Profile" /> }} component={Profile} />
     </Drawer.Navigator>;
-
+}
 export default memo(PrivateScreens);
 
 const styles = StyleSheet.create({

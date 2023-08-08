@@ -7,6 +7,7 @@ import { View, StyleSheet } from 'react-native';
 
 // local dependencies
 import Screen from '../../components/screen';
+import { SIGN_UP } from '../../constants/routes';
 import { COLOR } from '../../constants/root.theme';
 import TextInput from '../../components/text-input';
 import { useController, AUTH_INPUTS } from './controller';
@@ -16,9 +17,10 @@ const validationSchema = () => yup.object().shape({
     username: yup.string().required('Email address is required').email('Invalid email address'),
 });
 
-const SignIn = () => {
+const SignIn = ({ navigation }) => {
     const [{ initialValues, disabled }, { submit }] = useController();
     const submitHandler = useCallback(formData => submit(formData), [submit]);
+    const toSignUP = useCallback(() => navigation.push(SIGN_UP), [navigation]);
     return <Screen style={styles.container}>
         <Formik
             onSubmit={submitHandler}
@@ -58,18 +60,20 @@ const SignIn = () => {
                         type="outline"
                         loading={disabled}
                         onPress={handleSubmit}
+                        titleStyle={styles.titleStyle}
+                        buttonStyle={styles.buttonStyle}
+                        containerStyle={styles.containerStyle}
                         loadingProps={{ size: 'small', color: 'white' }}
-                        buttonStyle={{
-                            borderRadius: 5,
-                            backgroundColor: COLOR.GREEN.hex(),
-                        }}
-                        containerStyle={{
-                            height: 50,
-                            width: 200,
-                            marginVertical: 10,
-                            marginHorizontal: 50,
-                        }}
-                        titleStyle={{ fontWeight: 300, fontSize: 14, color: COLOR.WHITE.hex() }}
+                    />
+                    <Button
+                        fullWidth
+                        type="outline"
+                        title="SIGN UP"
+                        onPress={toSignUP}
+                        titleStyle={styles.titleStyle}
+                        buttonStyle={styles.buttonStyle}
+                        containerStyle={styles.containerStyle}
+                        loadingProps={{ size: 'small', color: 'white' }}
                     />
                 </View>}
         </Formik>
@@ -88,5 +92,20 @@ const styles = StyleSheet.create({
     formContainer: {
         margin: 16,
         width: '80%'
+    },
+    buttonStyle: {
+        borderRadius: 5,
+        backgroundColor: COLOR.GREEN.hex(),
+    },
+    containerStyle: {
+        height: 50,
+        width: 200,
+        marginVertical: 10,
+        marginHorizontal: 50,
+    },
+    titleStyle: {
+        fontSize: 14,
+        fontWeight: 300,
+        color: COLOR.WHITE.hex()
     }
 });
