@@ -14,7 +14,9 @@
     "android:dev-release": "react-native run-android --variant=developmentrelease",
     "android:prod": "react-native run-android --variant=productiondebug",
     "android:prod-release": "react-native run-android --variant=productionrelease",
-    "unlink": "react-native unlink react-native-safe-area-context"
+    "unlink": "react-native unlink react-native-safe-area-context",
+    "android-local-unix": "cd android && ./gradlew clean && cd ../ && react-native run-android --variant=localdebug",
+    "run-production": "cd android && ./gradlew clean && cd ../ && cross-env ENVFILE=.env.development && react-native run-android --variant=developmentdebug"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.1",
@@ -26,7 +28,9 @@
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.4.0",
     "color": "^4.2.3",
+    "cross-env": "^7.0.3",
     "formik": "^2.4.2",
+    "qs": "^6.11.2",
     "react": "18.2.0",
     "react-native": "0.72.2",
     "react-native-config": "^1.5.1",

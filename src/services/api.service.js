@@ -1,6 +1,8 @@
 // outsource dependencies
-import axios from "axios";
+import qs from 'qs';
+import axios from 'axios';
 import storage from 'sync-storage';
+import { Platform } from 'react-native';
 
 // local dependenccies
 import { config } from '../constants';
@@ -16,41 +18,57 @@ const isObjectEmpty = (objectName) =>
 
 // absolute path to base API
 const BASE_API = `${config.serviceUrl}/${config.apiPath}`;
+// absolute url to patient API
+const API_PATH = BASE_API;
 
 // private names
 const AUTH_STORE = 'sAuth';
 const AUTH_BEARER = 'Bearer ';
 const AUTH_HEADER = 'Authorization';
-const ACCESS_TOKEN = 'access_token';
-const REFRESH_TOKEN = 'refresh_token';
+
+const ACCESS_TOKEN = 'accessToken';
+const REFRESH_TOKEN = 'refreshToken';
+
+const paramsSerializer = options => qs.stringify(options, { arrayFormat: 'repeat', encode: false });
+// const instanceAPI = axios.create({
+//     headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//     },
+//     baseURL: "http://142.93.134.108:1111/",
+// });
 
 const instanceAPI = axios.create({
+    paramsSerializer,
+    baseURL: API_PATH,
+    withCredentials: false,
     headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'user-platform': Platform.OS === 'ios' ? 'IOS' : 'ANDROID',
     },
-    baseURL: "http://142.93.134.108:1111/",
 });
 
 export const authAPI = {
-    async createUser(email, password) {
-        return await instanceAPI.post(`sign_up`, { email, password });
+    async createUser(username, password) {
+        return await instanceAPI.post(`${API_PATH}/patient-service/public/patients/sign-up`, { username, password });
     },
-    async loginUser(email, password) {
-        return await instanceAPI.post(`login?email=${email}&password=${password}`);
+    async loginUser(username, password) {
+        return await instanceAPI.post(`${BASE_API}/auth/token`, { username, password });
     },
     async logout() {
-        console.log('auth api logout');
-        return await instanceAPI.post('log_out');
+        return await instanceAPI.post(`${BASE_API}/auth/logout`);
     },
     async me() {
-        return await instanceAPI.get("me", {
+        console.log(storage, 'getAccessToken()');
+        return await instanceAPI.get(`${API_PATH}/patient-service/patients/me`, {
             headers: {
                 [AUTH_HEADER]: `${AUTH_BEARER}${getAccessToken()}`,
             },
         });
     },
     async refresh() {
+        console.log('REFRESH');
         return await instance.post(
             "refresh",
             {},
@@ -129,6 +147,7 @@ const logout = async (transfer = {}) => {
         delete instanceAPI.defaults.headers[AUTH_HEADER];
         return transfer;
     }
+    const resp = await authAPI.logout();
     updateSession(null);
     delete instanceAPI.defaults.headers[AUTH_HEADER];
     return transfer;
@@ -156,13 +175,11 @@ async function refreshSession() {
  */
 instanceAPI.interceptors.response.use(
     prepareResponse,
-    error => {
-        return ((
+    error => ((
             isLoggedIn()
             && error.request.status === 401
             && !/logout|\/oauth\/token/.test(error.config.url)
         ) ? refreshSession() : prepareAxiosError(error))
-    }
 );
 
 function prepareResponse(response) {
@@ -185,13 +202,11 @@ function prepareAxiosError(error) {
 }
 
 const login = async (email, password) => {
-    const { statusCode, body } = await authAPI.loginUser(email, password);
-    if (statusCode === 200) {
-        // NOTE get from storage
-        const session = getSession();
+    const session = await authAPI.loginUser(email, password);
+    if (session) {
+        updateSession(session)
         instanceAPI.defaults.headers[AUTH_HEADER] = AUTH_BEARER + session[ACCESS_TOKEN];
-        const { statusCode } = await authAPI.me();
-        statusCode === 200 && updateSession(body);
+        await authAPI.me();
     } else {
         await authAPI.logout();
     }

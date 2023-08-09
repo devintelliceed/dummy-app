@@ -1,5 +1,6 @@
 package com.dummy;
 
+import com.lugg.RNCConfig.RNCConfigPackage;
 import android.app.Application;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -23,11 +24,12 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-            packages.add(new com.swmansion.rnscreens.RNScreensPackage());
+//            packages.add(new com.swmansion.rnscreens.RNScreensPackage());
             //My Metro told me that RNGestureHandlerPackage is created twice, hence I comment the line, and then everything works.
             // packages.add(new com.swmansion.gesturehandler.RNGestureHandlerPackage());
-            packages.add(new com.th3rdwave.safeareacontext.SafeAreaContextPackage());
-            packages.add(new com.swmansion.reanimated.ReanimatedPackage());
+//            packages.add(new com.th3rdwave.safeareacontext.SafeAreaContextPackage());
+//            packages.add(new com.swmansion.reanimated.ReanimatedPackage());
+//            packages.add(new RNCConfigPackage());
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           return packages;
