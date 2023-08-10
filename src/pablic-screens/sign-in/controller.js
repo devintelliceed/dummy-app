@@ -20,8 +20,8 @@ const initialState = {
     disabled: false,
     initialized: false,
     initialValues: {
-        [AUTH_INPUTS.USERNAME]: 'renatafo544@gmail.com',
-        [AUTH_INPUTS.PASSWORD]: 'password',
+        [AUTH_INPUTS.USERNAME]: '',
+        [AUTH_INPUTS.PASSWORD]: '',
     }
 };
 
