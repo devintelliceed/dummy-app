@@ -18,8 +18,6 @@ const isObjectEmpty = (objectName) =>
 
 // absolute path to base API
 const BASE_API = `${config.serviceUrl}/${config.apiPath}`;
-// absolute url to patient API
-const API_PATH = BASE_API;
 
 // private names
 const AUTH_STORE = 'sAuth';
@@ -40,7 +38,7 @@ const paramsSerializer = options => qs.stringify(options, { arrayFormat: 'repeat
 
 const instanceAPI = axios.create({
     paramsSerializer,
-    baseURL: API_PATH,
+    baseURL: BASE_API,
     withCredentials: false,
     headers: {
         'Cache-Control': 'no-cache',
@@ -50,34 +48,23 @@ const instanceAPI = axios.create({
 });
 
 export const authAPI = {
-    async createUser(username, password) {
-        return await instanceAPI.post(`${API_PATH}/patient-service/public/patients/sign-up`, { username, password });
-    },
-    async loginUser(username, password) {
-        return await instanceAPI.post(`${BASE_API}/auth/token`, { username, password });
-    },
     async logout() {
         return await instanceAPI.post(`${BASE_API}/auth/logout`);
     },
     async me() {
-        console.log(storage, 'getAccessToken()');
-        return await instanceAPI.get(`${API_PATH}/patient-service/patients/me`, {
-            headers: {
-                [AUTH_HEADER]: `${AUTH_BEARER}${getAccessToken()}`,
-            },
-        });
+        return await instanceAPI.get(`${BASE_API}/patient-service/patients/me`);
+    },
+    async updateSelf(data) {
+        return await instanceAPI.put(`${BASE_API}/patient-service/patients/me`, data)
+    },
+    async loginUser(username, password) {
+        return await instanceAPI.post(`${BASE_API}/auth/token`, { username, password });
     },
     async refresh() {
-        console.log('REFRESH');
-        return await instance.post(
-            "refresh",
-            {},
-            {
-                headers: {
-                    [AUTH_HEADER]: `${AUTH_BEARER}${storage.get(getRefreshToken())}`,
-                },
-            }
-        );
+        return await instanceAPI.post(`${BASE_API}/auth/token/refresh`, { refreshToken: getRefreshToken() });
+    },
+    async createUser(username, password) {
+        return await instanceAPI.post(`${BASE_API}/patient-service/public/patients/sign-up`, { username, password });
     },
 };
 /**
@@ -147,7 +134,7 @@ const logout = async (transfer = {}) => {
         delete instanceAPI.defaults.headers[AUTH_HEADER];
         return transfer;
     }
-    const resp = await authAPI.logout();
+    await authAPI.logout();
     updateSession(null);
     delete instanceAPI.defaults.headers[AUTH_HEADER];
     return transfer;
@@ -158,15 +145,16 @@ const logout = async (transfer = {}) => {
  * @returns {Promise}
  * @public
  */
-async function refreshSession() {
+const refreshSession = async () => {
     // NOTE remove authentication header if it present
     delete instanceAPI.defaults.headers[AUTH_HEADER];
-
-    return await authAPI.refresh().then(session => {
+    try {
+        const session = await authAPI.refresh();
         updateSession(session);
         instanceAPI.defaults.headers[AUTH_HEADER] = AUTH_BEARER + session[ACCESS_TOKEN];
-        return session;
-    }).catch(logout);
+    } catch (error) {
+        logout();
+    }
 }
 /**
  * sync check to known is user logged in
@@ -176,10 +164,10 @@ async function refreshSession() {
 instanceAPI.interceptors.response.use(
     prepareResponse,
     error => ((
-            isLoggedIn()
-            && error.request.status === 401
-            && !/logout|\/oauth\/token/.test(error.config.url)
-        ) ? refreshSession() : prepareAxiosError(error))
+        isLoggedIn()
+        && error.request.status === 401
+        && !/logout|\/oauth\/token/.test(error.config.url)
+    ) ? refreshSession() : prepareAxiosError(error))
 );
 
 function prepareResponse(response) {
@@ -204,16 +192,17 @@ function prepareAxiosError(error) {
 const login = async (email, password) => {
     const session = await authAPI.loginUser(email, password);
     if (session) {
-        updateSession(session)
         instanceAPI.defaults.headers[AUTH_HEADER] = AUTH_BEARER + session[ACCESS_TOKEN];
-        await authAPI.me();
+        const user = await authAPI.me();
+        user && updateSession(session);
+        return user;
     } else {
         await authAPI.logout();
     }
 };
 
 const signUp = async (email, password) => {
-     await authAPI.createUser(email, password);
+    await authAPI.createUser(email, password);
 };
 
 export {

@@ -40,8 +40,8 @@ const SignIn = ({ navigation }) => {
                         touched={touched}
                         variant="standard"
                         disabled={!disabled}
-                        value={values.username}
                         name={AUTH_INPUTS.USERNAME}
+                        value={values[AUTH_INPUTS.USERNAME]}
                         onChangeText={handleChange(AUTH_INPUTS.USERNAME)}
                     />
                     <TextInput
@@ -50,8 +50,9 @@ const SignIn = ({ navigation }) => {
                         touched={touched}
                         variant="standard"
                         disabled={!disabled}
-                        value={values.password}
+                        secureTextEntry={true}
                         name={AUTH_INPUTS.PASSWORD}
+                        value={values[AUTH_INPUTS.PASSWORD]}
                         onChangeText={handleChange(AUTH_INPUTS.PASSWORD)}
                     />
                     <Button

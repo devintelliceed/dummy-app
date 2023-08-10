@@ -20,8 +20,8 @@ const initialState = {
     disabled: false,
     initialized: false,
     initialValues: {
-        [AUTH_INPUTS.USERNAME]: '',
-        [AUTH_INPUTS.PASSWORD]: '',
+        [AUTH_INPUTS.USERNAME]: 'renatafo544@gmail.com',
+        [AUTH_INPUTS.PASSWORD]: 'password',
     }
 };
 
@@ -51,8 +51,8 @@ export function * submitSaga ({ payload }) {
     yield put(updateData({ disabled: true, initialized: false }));
     try {
         const { username, password } = payload;
-        yield call(login, username, password);
-        yield put(updateRootData({ auth: true }));
+        const user = yield call(login, username, password);
+        yield put(updateRootData({ auth: true, user }));
         yield put(updateData({ initialValues: { ...payload, password: '' } }));
         yield rootNavigation(PRIVATE);
     } catch ({ message }) {
