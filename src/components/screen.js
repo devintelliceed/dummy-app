@@ -11,15 +11,14 @@ import { COLOR } from '../constants/root.theme';
 const isFunction = ent => ent instanceof Function;
 
 const Screen = (
-    { children, style, statusBarHidden, statusBarVariant, statusBarAnimated, statusBarBg, init, unmount }
+    { children, style, statusBarHidden, statusBarVariant, statusBarAnimated, statusBarBg, init, unmount, initialized }
 ) => {
     useFocusEffect(
         useCallback(() => {
-            isFunction(init) && init();
-            return () => isFunction(unmount) && unmount();
-        }, [init, unmount])
+            !initialized && isFunction(init) && init();
+            return () => initialized && isFunction(unmount) && unmount();
+        }, [init, unmount, initialized])
     );
-
     return <View style={styles.container}>
         <StatusBar
             hidden={statusBarHidden}
@@ -34,6 +33,18 @@ const Screen = (
 };
 
 export default memo(Screen);
+
+Screen.defaultProps = {
+    init: null,
+    clear: null,
+    style: null,
+    children: null,
+    initialized: false,
+    statusBarHidden: false,
+    statusBarAnimated: false,
+    statusBarVariant: 'default',
+    statusBarBg: COLOR.DARK_GREY.hex(),
+};
 
 // configure
 const styles = StyleSheet.create({

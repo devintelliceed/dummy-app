@@ -1,11 +1,12 @@
 
 // outsource dependencies
 import { createSlice } from "@reduxjs/toolkit";
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery, call } from 'redux-saga/effects';
 
 // loacal dependencies
 import { PRIVATE } from "../../constants/routes";
 import { useControllerCreator } from "../../hooks";
+import { login } from "../../services/api.service";
 import { rootNavigation } from "../../root-navigation";
 import { updateData as updateRootData } from '../../store/app';
 
@@ -16,6 +17,7 @@ export const AUTH_INPUTS = {
 };
 
 const initialState = {
+    error: null,
     disabled: false,
     initialized: false,
     initialValues: {
@@ -46,15 +48,17 @@ export function * signInSaga () {
     yield takeEvery(submit.type, submitSaga);
 }
 
-function * submitSaga ({ payload }) {
+export function * submitSaga ({ payload }) {
     yield put(updateData({ disabled: true, initialized: false }));
     try {
-        yield put(updateRootData({ auth: true }));
+        const { username, password } = payload;
+        const user = yield call(login, username, password);
+        yield put(updateRootData({ auth: true, user }));
         yield put(updateData({ initialValues: { ...payload, password: '' } }));
         yield rootNavigation(PRIVATE);
     } catch ({ message }) {
         console.log('SignIn Error');
-        yield put(updateData({ initialValues: { ...payload, password: '' } }));
+        yield put(updateData({ initialValues: { ...payload, password: '' }, error: message }));
     }
     yield put(updateData({ disabled: false, initialized: true }));
 }

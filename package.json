@@ -14,17 +14,24 @@
     "android:dev-release": "react-native run-android --variant=developmentrelease",
     "android:prod": "react-native run-android --variant=productiondebug",
     "android:prod-release": "react-native run-android --variant=productionrelease",
-    "unlink": "react-native unlink react-native-safe-area-context"
+    "unlink": "react-native unlink react-native-safe-area-context",
+    "android-local-unix": "cd android && ./gradlew clean && cd ../ && react-native run-android --variant=localdebug",
+    "android-local-release-unix": "cd android && ./gradlew clean && cd ../ && react-native run-android --variant=localrelease",
+    "run-production": "cd android && ./gradlew clean && cd ../ && cross-env ENVFILE=.env.development && react-native run-android --variant=developmentdebug"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.1",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@reduxjs/toolkit": "^1.9.5",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
+    "axios": "^1.4.0",
     "color": "^4.2.3",
+    "cross-env": "^7.0.3",
     "formik": "^2.4.2",
+    "qs": "^6.11.2",
     "react": "18.2.0",
     "react-native": "0.72.2",
     "react-native-config": "^1.5.1",
@@ -35,6 +42,7 @@
     "react-native-screens": "^3.22.1",
     "react-redux": "^8.1.1",
     "redux-saga": "^1.2.3",
+    "sync-storage": "^0.4.2",
     "yup": "^1.2.0"
   },
   "devDependencies": {

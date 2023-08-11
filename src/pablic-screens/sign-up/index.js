@@ -1,29 +1,29 @@
 // outsource dependencies
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button, Text } from '@rneui/themed';
 import { memo, useCallback } from 'react';
+import { Button, Text } from '@rneui/themed';
 import { View, StyleSheet } from 'react-native';
 
 // local dependencies
 import Screen from '../../components/screen';
-import { SIGN_UP } from '../../constants/routes';
 import { COLOR } from '../../constants/root.theme';
 import TextInput from '../../components/text-input';
-import { useController, AUTH_INPUTS } from './controller';
+import { useController, SIGNUP_INPUTS } from './controller';
 
 // Validation
 const validationSchema = () => yup.object().shape({
-    username: yup.string().required('Email address is required').email('Invalid email address'),
-});
+    [SIGNUP_INPUTS.USERNAME]: yup.string().required('Email address is required').email('Invalid email address'),
+    [SIGNUP_INPUTS.PASSWORD]: yup.string().required('Password is required').min(7, 'Password must contain at least 7 symbol character'),
+    [SIGNUP_INPUTS.COFIRM_PASSWORD]: yup.string()
+       .oneOf([yup.ref(SIGNUP_INPUTS.PASSWORD), null], 'Passwords must match')
+  });
 
-const SignIn = ({ navigation }) => {
+const SignIn = () => {
     const [{ initialValues, disabled, error }, { submit }] = useController();
     const submitHandler = useCallback(formData => submit(formData), [submit]);
-    const toSignUP = useCallback(() => navigation.push(SIGN_UP), [navigation]);
     return <Screen style={styles.container}>
         <Formik
-            enableReinitialize
             onSubmit={submitHandler}
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -41,9 +41,9 @@ const SignIn = ({ navigation }) => {
                         touched={touched}
                         variant="standard"
                         disabled={!disabled}
-                        name={AUTH_INPUTS.USERNAME}
-                        value={values[AUTH_INPUTS.USERNAME]}
-                        onChangeText={handleChange(AUTH_INPUTS.USERNAME)}
+                        name={SIGNUP_INPUTS.USERNAME}
+                        value={values[SIGNUP_INPUTS.USERNAME]}
+                        onChangeText={handleChange(SIGNUP_INPUTS.USERNAME)}
                     />
                     <TextInput
                         error={errors}
@@ -51,31 +51,38 @@ const SignIn = ({ navigation }) => {
                         touched={touched}
                         variant="standard"
                         disabled={!disabled}
-                        secureTextEntry={true}
-                        name={AUTH_INPUTS.PASSWORD}
-                        value={values[AUTH_INPUTS.PASSWORD]}
-                        onChangeText={handleChange(AUTH_INPUTS.PASSWORD)}
+                        name={SIGNUP_INPUTS.PASSWORD}
+                        value={values[SIGNUP_INPUTS.PASSWORD]}
+                        onChangeText={handleChange(SIGNUP_INPUTS.PASSWORD)}
+                    />
+                    <TextInput
+                        error={errors}
+                        touched={touched}
+                        variant="standard"
+                        disabled={!disabled}
+                        label="Confirm Password"
+                        name={SIGNUP_INPUTS.COFIRM_PASSWORD}
+                        value={values[SIGNUP_INPUTS.COFIRM_PASSWORD]}
+                        onChangeText={handleChange(SIGNUP_INPUTS.COFIRM_PASSWORD)}
                     />
                     <Button
                         fullWidth
-                        title="LOGIN"
+                        title="SIGN UP"
                         type="outline"
                         loading={disabled}
                         onPress={handleSubmit}
-                        titleStyle={styles.titleStyle}
-                        buttonStyle={styles.buttonStyle}
-                        containerStyle={styles.containerStyle}
                         loadingProps={{ size: 'small', color: 'white' }}
-                    />
-                    <Button
-                        fullWidth
-                        type="outline"
-                        title="SIGN UP"
-                        onPress={toSignUP}
-                        titleStyle={styles.titleStyle}
-                        buttonStyle={styles.buttonStyle}
-                        containerStyle={styles.containerStyle}
-                        loadingProps={{ size: 'small', color: 'white' }}
+                        buttonStyle={{
+                            borderRadius: 5,
+                            backgroundColor: COLOR.GREEN.hex(),
+                        }}
+                        containerStyle={{
+                            height: 50,
+                            width: 200,
+                            marginVertical: 10,
+                            marginHorizontal: 50,
+                        }}
+                        titleStyle={{ fontWeight: 300, fontSize: 14, color: COLOR.WHITE.hex() }}
                     />
                     {error ? <Text style={{color: 'red'}}>{error}</Text> : null}
                 </View>}
@@ -95,20 +102,5 @@ const styles = StyleSheet.create({
     formContainer: {
         margin: 16,
         width: '80%'
-    },
-    buttonStyle: {
-        borderRadius: 5,
-        backgroundColor: COLOR.GREEN.hex(),
-    },
-    containerStyle: {
-        height: 50,
-        width: 200,
-        marginVertical: 10,
-        marginHorizontal: 50,
-    },
-    titleStyle: {
-        fontSize: 14,
-        fontWeight: 300,
-        color: COLOR.WHITE.hex()
     }
 });
