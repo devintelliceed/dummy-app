@@ -17,6 +17,7 @@ export const AUTH_INPUTS = {
 };
 
 const initialState = {
+    error: null,
     disabled: false,
     initialized: false,
     initialValues: {
@@ -57,7 +58,7 @@ export function * submitSaga ({ payload }) {
         yield rootNavigation(PRIVATE);
     } catch ({ message }) {
         console.log('SignIn Error');
-        yield put(updateData({ initialValues: { ...payload, password: '' } }));
+        yield put(updateData({ initialValues: { ...payload, password: '' }, error: message }));
     }
     yield put(updateData({ disabled: false, initialized: true }));
 }

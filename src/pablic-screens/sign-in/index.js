@@ -1,7 +1,7 @@
 // outsource dependencies
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Button } from '@rneui/themed';
+import { Button, Text } from '@rneui/themed';
 import { memo, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -18,11 +18,12 @@ const validationSchema = () => yup.object().shape({
 });
 
 const SignIn = ({ navigation }) => {
-    const [{ initialValues, disabled }, { submit }] = useController();
+    const [{ initialValues, disabled, error }, { submit }] = useController();
     const submitHandler = useCallback(formData => submit(formData), [submit]);
     const toSignUP = useCallback(() => navigation.push(SIGN_UP), [navigation]);
     return <Screen style={styles.container}>
         <Formik
+            enableReinitialize
             onSubmit={submitHandler}
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -76,6 +77,7 @@ const SignIn = ({ navigation }) => {
                         containerStyle={styles.containerStyle}
                         loadingProps={{ size: 'small', color: 'white' }}
                     />
+                    {error ? <Text style={{color: 'red'}}>{error}</Text> : null}
                 </View>}
         </Formik>
     </Screen>

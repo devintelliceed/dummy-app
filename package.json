@@ -16,6 +16,7 @@
     "android:prod-release": "react-native run-android --variant=productionrelease",
     "unlink": "react-native unlink react-native-safe-area-context",
     "android-local-unix": "cd android && ./gradlew clean && cd ../ && react-native run-android --variant=localdebug",
+    "android-local-release-unix": "cd android && ./gradlew clean && cd ../ && react-native run-android --variant=localrelease",
     "run-production": "cd android && ./gradlew clean && cd ../ && cross-env ENVFILE=.env.development && react-native run-android --variant=developmentdebug"
   },
   "dependencies": {

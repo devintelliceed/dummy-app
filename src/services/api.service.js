@@ -186,7 +186,7 @@ function prepareAxiosError(error) {
     if (config.DEBUG) {
         console.warn('%c Interceptor: ', 'background: #EC1B24; color: #fff; font-size: 14px;', error);
     }
-    return Promise.reject({ ...error.response, message: 'error message' });
+    return Promise.reject({ ...error.response, message: error?.message + ' ' + error?.response?.data?.errorMessageDebug });
 }
 
 const login = async (email, password) => {

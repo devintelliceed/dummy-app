@@ -19,9 +19,9 @@ const PROFILE_FORM = {
 const toCapitalized = string => (typeof string === 'string') ? `${string.charAt(0).toUpperCase()}${string.slice(1).toLocaleLowerCase()}` : string;
 
 const Profile = () => {
-    const [{ user, initialized, disabled }, { initialize, submit, clear }] = useController();
+    const [{ user, initialized, disabled }, { initialize, submit }] = useController();
     const submitHandler = useCallback(formData => submit(formData), [submit]);
-    return <Screen unmount={clear} init={initialize} initialized={initialized} style={styles.container}>
+    return <Screen init={initialize} initialized={initialized} style={styles.container}>
         <Formik
             enableReinitialize
             initialValues={user}
@@ -34,8 +34,8 @@ const Profile = () => {
                 handleChange,
                 handleSubmit,
             }) => <View style={styles.formContainer}>
-                    <Text style={{ alignSelf: 'center', marginBottom: 5, color: COLOR.DARK_GREY.hex() }} h3 >Profile {values.name}</Text>
-                    <Image style={{ height: 100, width: 100, borderRadius: 100, alignSelf: 'center' }} source={{ uri: values.coverImage?.url }} resizeMode="cover" />
+                    <Text style={{ alignSelf: 'center', marginBottom: 5, color: COLOR.DARK_GREY.hex() }} h3 >Profile {values?.name}</Text>
+                    <Image style={{ height: 100, width: 100, borderRadius: 100, alignSelf: 'center' }} source={{ uri: values?.coverImage?.url }} resizeMode="cover" />
                     <TextInput
                         error={errors}
                         touched={touched}
@@ -44,7 +44,7 @@ const Profile = () => {
                         disabled={!disabled}
                         name={PROFILE_FORM.FIRST_NAME}
                         containerStyle={styles.containerStyle}
-                        value={values[PROFILE_FORM.FIRST_NAME]}
+                        value={values&&values[PROFILE_FORM.FIRST_NAME]}
                         onChangeText={handleChange(PROFILE_FORM.FIRST_NAME)}
                     />
                     <TextInput
@@ -54,8 +54,8 @@ const Profile = () => {
                         variant="standard"
                         disabled={!disabled}
                         name={PROFILE_FORM.LAST_NAME}
-                        value={values[PROFILE_FORM.LAST_NAME]}
                         containerStyle={styles.containerStyle}
+                        value={values&&values[PROFILE_FORM.LAST_NAME]}
                         onChangeText={handleChange(PROFILE_FORM.LAST_NAME)}
                     />
                     <Button
